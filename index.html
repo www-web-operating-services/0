@@ -16,7 +16,6 @@ body {
   background: black;
   color: white;
 }
-
 /* MAIN */
 #main {
   width: 100%;
@@ -24,7 +23,6 @@ body {
   background: url('https://i.ibb.co/PZkTNWgp/peakpx-1.jpg') center/cover;
   position: relative;
 }
-
 /* TIME (LEFT BOTTOM) */
 #mainTime {
   position: absolute;
@@ -38,7 +36,6 @@ body {
   font-size: 14px;
   opacity: 0.8;
 }
-
 /* >>> */
 .start-btn {
   position: absolute;
@@ -47,7 +44,6 @@ body {
   font-size: 22px;
   cursor: pointer;
 }
-
 /* BLUR LOGIN */
 #blurLayer {
   position: absolute;
@@ -59,8 +55,6 @@ body {
   justify-content: center;
   align-items: center;
 }
-
-/* LOGIN */
 .profile-img {
   width: 90px;
   border-radius: 50%;
@@ -83,7 +77,6 @@ body {
   color: white;
   cursor: pointer;
 }
-
 /* KCNX Button (small, top right of login) */
 #kcnxButton {
   position: absolute;
@@ -101,10 +94,7 @@ body {
 #kcnxButton:hover {
   background: rgba(255,255,255,0.4);
 }
-
-/* Main screen window button replaced with emoji, style inline in HTML */
-
-/* DESKTOP */
+/* Main screen window button replaced with SVG (removed) */
 #desktop {
   display: none;
   width: 100%;
@@ -112,7 +102,6 @@ body {
   background: url('https://i.ibb.co/BKzS8P5y/peakpx.jpg') center/cover;
   position: relative;
 }
-
 /* WINDOWS STYLE ICON GRID */
 #desktopIcons {
   position: absolute;
@@ -123,26 +112,25 @@ body {
   grid-auto-rows: 90px;
   gap: 15px;
 }
-
+/* App icons: reduce size by 50% */
 .icon {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  width: 80px;
 }
-
 .icon img {
-  width: 48px;
-  height: 48px;
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
 }
-
 .icon span {
   font-size: 12px;
   margin-top: 5px;
   text-align: center;
 }
-
 /* TASKBAR */
 #taskbar {
   position: absolute;
@@ -152,8 +140,8 @@ body {
   background: rgba(0, 0, 0, 0.7);
   display: flex;
   align-items: center;
+  padding: 0 10px;
 }
-
 /* START MENU */
 #startMenu {
   position: absolute;
@@ -172,14 +160,12 @@ body {
   text-align: center;
   cursor: pointer;
 }
-
 /* TASK TIME */
 #taskTime {
   margin-left: auto;
   padding: 10px;
 }
-
-/* SHUTDOWN */
+/* SHUTDOWN overlay */
 #shutdown {
   display: none;
   position: absolute;
@@ -189,10 +175,26 @@ body {
   justify-content: center;
   align-items: center;
   font-size: 30px;
+  z-index: 999;
+}
+/* Window menu for icon (shutdown, sleep, restart) */
+#windowMenu {
+  display: none;
+  position: absolute;
+  top: 50px;
+  right: 10px;
+  background: #222;
+  border: 1px solid #555;
+  padding: 10px;
+  border-radius: 4px;
+  z-index: 1000;
+}
+#windowMenu div {
+  margin-bottom: 8px;
+  cursor: pointer;
 }
 </style>
 </head>
-
 <body onclick="startSound()">
 
 <!-- Background sound -->
@@ -207,19 +209,28 @@ body {
     <div id="mDate"></div>
   </div>
 
-  <div class="start-btn" onclick="showLogin(event)">>>></div>
+  <!-- Modified button -->
+  <div class="start-btn" onclick="showLogin(event)">>>> </div>
 
-  <!-- KCNX Button -->
-  <button id="kcnxButton" onclick="goFullScreen()">⨁ Enter KCNX OS</button>
+  <!-- KCNX Button (changed text) -->
+  <button id="kcnxButton" onclick="goFullScreen()">[⌕]𓆉</button>
 
-  <!-- Main screen window button replaced with emoji -->
-  <div 
-    id="startBtn" 
-    onclick="goFullScreen()" 
-    title="Fullscreen" 
-    style="position: absolute; top: 10px; right: 10px; font-size: 24px; cursor: pointer;"
-  >
-    🪟
+  <!-- Main screen window button replaced with SVG (removed) -->
+  <!-- Removed the SVG icon from here -->
+
+  <!-- Window menu for icon -->
+  <div id="windowIcon" style="position: absolute; top: 10px; right: 10px; cursor:pointer; width:24px; height:24px;" onclick="toggleWindowMenu()">
+    <!-- SVG icon for window -->
+    <svg width="24" height="24" viewBox="0 0 122.46 122.88" xmlns="http://www.w3.org/2000/svg" style="fill:#0078D6;">
+      <path d="M0,17.53v41.52h50.07v-48.4L0,17.53L0,17.53z M56.11,9.68L122.46,0v58.63H56.11V9.68L56.11,9.68z M0,64.16 v41.52l50.07,7.01V64.16H0L0,64.16z M56.11,64.81h66.35v58.07l-66.35-9.4V64.81L56.11,64.81z"/>
+    </svg>
+  </div>
+
+  <!-- Window menu -->
+  <div id="windowMenu">
+    <div onclick="shutdown()">Shutdown</div>
+    <div onclick="sleep()">Sleep</div>
+    <div onclick="restart()">Restart</div>
   </div>
 
   <div id="blurLayer" onclick="closeBlur()">
@@ -242,24 +253,52 @@ body {
 <div id="desktop" onclick="closeStart()">
   <!-- ICONS -->
   <div id="desktopIcons">
+    <!-- Existing icons -->
     <div class="icon" onclick="openApp('https://www.bing.com')">
       <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" />
       <span>Microsoft Edge</span>
     </div>
-
     <div class="icon" onclick="openApp('https://www.bing.com')">
       <img src="https://cdn-icons-png.flaticon.com/512/300/300221.png" />
       <span>Bing</span>
     </div>
-
     <div class="icon" onclick="openApp('#')">
       <img src="https://i.ibb.co/DPcwkwjW/windows-10-recreation-file-and-internet-explorer-yellow-and-blue-folder-illustration-png-clipart.jpg" />
       <span>Folder</span>
     </div>
-
     <div class="icon" onclick="openApp('https://i.ibb.co/vxzNSDjR/recycling-bin-trash-rubbish-bins-waste-paper-baskets-computer-icons-window-thumbnail.jpg')">
       <img src="https://i.ibb.co/vxzNSDjR/recycling-bin-trash-rubbish-bins-waste-paper-baskets-computer-icons-window-thumbnail.jpg" />
       <span>Recycle Bin</span>
+    </div>
+
+    <!-- New apps: PC, Settings, YouTube, Netflix -->
+    <div class="icon" onclick="openApp('https://example.com')">
+      <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PC" /></a>
+      <span>PC</span>
+    </div>
+    <div class="icon" onclick="openApp('https://example.com')">
+      <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/2099/2099058.png" alt="Settings" /></a>
+      <span>Settings</span>
+    </div>
+    <div class="icon" onclick="openApp('https://www.youtube.com')">
+      <a href="https://www.youtube.com" target="_blank">
+        <img src="https://i.ibb.co/VcpnZLcS/pngtree-youtube-social-media-3d-stereo-png-image-6308427.png" alt="YouTube" />
+      </a>
+      <span>YouTube</span>
+    </div>
+    <div class="icon" onclick="openApp('https://www.netflix.com')">
+      <a href="https://www.netflix.com" target="_blank">
+        <img src="https://i.ibb.co/zWQk939g/netflix-logo-transparent-background-free-png.png" alt="Netflix" />
+      </a>
+      <span>Netflix</span>
+    </div>
+
+    <!-- Google icon replacing G icon -->
+    <div class="icon" onclick="openApp('https://www.google.com')">
+      <a href="https://www.google.com" target="_blank">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" />
+      </a>
+      <span>Google</span>
     </div>
   </div>
 
@@ -271,7 +310,13 @@ body {
 
   <!-- TASKBAR -->
   <div id="taskbar">
-    <div onclick="toggleStart()">🪟</div>
+    <!-- The window icon is now the SVG in the taskbar -->
+    <div id="taskbarWindowIcon" style="cursor:pointer; margin-right:10px;" onclick="toggleWindowMenu()">
+      <!-- SVG icon for window -->
+      <svg width="24" height="24" viewBox="0 0 122.46 122.88" xmlns="http://www.w3.org/2000/svg" style="fill:#0078D6;">
+        <path d="M0,17.53v41.52h50.07v-48.4L0,17.53L0,17.53z M56.11,9.68L122.46,0v58.63H56.11V9.68L56.11,9.68z M0,64.16 v41.52l50.07,7.01V64.16H0L0,64.16z M56.11,64.81h66.35v58.07l-66.35-9.4V64.81L56.11,64.81z"/>
+      </svg>
+    </div>
     <div id="taskTime"></div>
     <!-- Example widgets -->
     <div style="margin-left:auto; display:flex; gap:10px; align-items:center;">
@@ -285,27 +330,23 @@ body {
 <div id="shutdown">Shutting down...</div>
 
 <script>
-/* SOUND & RING */
+// Sound & Ring
 const backgroundSound = document.getElementById("backgroundSound");
 const ringSound = document.getElementById("ringSound");
-
-// Play background sound once when opened
 window.onload = () => {
   backgroundSound.play().catch(()=>{});
   setTimeout(() => {
     ringSound.play().catch(()=>{});
   }, 5000);
 };
-
-/* TIME */
+// TIME
 setInterval(()=>{
   const n = new Date();
   document.getElementById('mTime').innerText = n.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
   document.getElementById('mDate').innerText = n.toDateString();
   document.getElementById('taskTime').innerText = n.toLocaleTimeString([], {hour:'2-digit',minute:'2-digit'});
 },1000);
-
-/* LOGIN */
+// LOGIN
 function showLogin(e){e.stopPropagation();document.getElementById('blurLayer').style.display="flex";}
 function closeBlur(){document.getElementById('blurLayer').style.display="none";}
 function login(){
@@ -315,51 +356,56 @@ function login(){
     document.getElementById('desktop').style.display="block";
   }
 }
-
-// Handle Enter key for login
 document.getElementById('pass').addEventListener('keydown', function(e){
   if(e.key==='Enter'){ login(); }
 });
-
-/* START MENU */
+// START MENU toggle
 function toggleStart(){
   document.getElementById('startMenu').style.display = (document.getElementById('startMenu').style.display=="block")?"none":"block";
 }
 function closeStart(){document.getElementById('startMenu').style.display="none";}
-
-/* APPS */
+// Apps
 function openApp(url){
   if(url!="#") window.open(url,"_blank");
 }
-
-/* SHUTDOWN */
+// Shutdown
 function shutdown(){
   document.getElementById('desktop').style.display="none";
   document.getElementById('shutdown').style.display="flex";
-
   setTimeout(()=>{
     document.getElementById('shutdown').style.display="none";
     document.getElementById('main').style.display="block";
   },2000);
 }
-
-/* Fullscreen Function */
+// Fullscreen
 function goFullScreen() {
   document.documentElement.requestFullscreen().catch(() => {
     alert("Fullscreen mode is not supported in this browser.");
   });
 }
-
-// Handle Enter key for login
-document.getElementById('pass').addEventListener('keydown', function(e){
-  if(e.key==='Enter'){ login(); }
+// Toggle window menu
+function toggleWindowMenu() {
+  const menu = document.getElementById('windowMenu');
+  menu.style.display = (menu.style.display === 'block') ? 'none' : 'block';
+}
+// Close window menu on outside click
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('windowMenu');
+  if (menu && !menu.contains(e.target) && e.target.id !== 'taskbarWindowIcon') {
+    menu.style.display = 'none';
+  }
 });
-
-// Ring sound after 5 mins (300000 ms)
-setInterval(()=>{
-  ringSound.play().catch(()=>{});
-}, 300000);
+// Window menu actions
+function sleep() {
+  alert('Sleep mode (simulate)');
+}
+function restart() {
+  alert('Restart (simulate)');
+}
+function startSound() {
+  // optional: play a sound on any click
+}
+// Effects for icon clicks
 </script>
-
 </body>
-  </html>
+                    </html>
