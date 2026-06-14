@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>www.windowserver1.com</title>
+<title>KCNX OS FINAL WINDOWS STYLE</title>
 
 <style>
 * {
@@ -20,7 +20,7 @@ body {
 #main {
   width: 100%;
   height: 100vh;
-  background: url('https://i.ibb.co/PZkTNWgp/peakpx-1.jpg') center/cover;
+  background: url('https://files.catbox.moe/s4uwrr.jpg') center/cover no-repeat;
   position: relative;
 }
 /* TIME (LEFT BOTTOM) */
@@ -54,28 +54,63 @@ body {
   display: none;
   justify-content: center;
   align-items: center;
+  z-index: 999;
 }
 .profile-img {
   width: 90px;
+  height: 90px;
+  object-fit: cover;
   border-radius: 50%;
 }
 .login-box {
   display: flex;
-  background: rgba(0, 0, 0, 0.6);
-  padding: 8px;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  position: relative;
 }
-.login-box input {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 10px;
-  outline: none;
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.login-header {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+#pass {
+  border-radius: 4px;
+  padding: 10px 40px 10px 10px; /* extra padding for eye icon */
+  width: 200px;
+  font-size: 14px;
+  position: relative;
+}
+#pass-container {
+  position: relative;
+  display: inline-block;
+}
+#toggleEye {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  width: 20px;
+  height: 20px;
 }
 .arrow-btn {
-  background: transparent;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 18px;
   border: none;
-  color: white;
+  background-color: rgba(255,255,255,0.2);
   cursor: pointer;
+  margin-top: 10px;
 }
 /* KCNX Button (small, top right of login) */
 #kcnxButton {
@@ -94,15 +129,15 @@ body {
 #kcnxButton:hover {
   background: rgba(255,255,255,0.4);
 }
-/* Main screen window button replaced with SVG (removed) */
+/* Main desktop background - display page wallpaper after login */
 #desktop {
   display: none;
   width: 100%;
   height: 100vh;
-  background: url('https://i.ibb.co/BKzS8P5y/peakpx.jpg') center/cover;
+  background: url('https://files.catbox.moe/bjlapz.png') center/cover no-repeat;
   position: relative;
 }
-/* WINDOWS STYLE ICON GRID */
+/* ICON GRID */
 #desktopIcons {
   position: absolute;
   top: 20px;
@@ -112,7 +147,7 @@ body {
   grid-auto-rows: 90px;
   gap: 15px;
 }
-/* App icons: reduce size by 50% */
+/* App icons styling */
 .icon {
   display: flex;
   flex-direction: column;
@@ -152,6 +187,7 @@ body {
   background: rgba(0, 0, 0, 0.9);
   display: none;
   padding: 10px;
+  border-radius: 4px;
 }
 .shutdown {
   margin-top: auto;
@@ -187,7 +223,6 @@ body {
   border: 1px solid #555;
   padding: 10px;
   border-radius: 4px;
-  z-index: 1000;
 }
 #windowMenu div {
   margin-bottom: 8px;
@@ -195,7 +230,7 @@ body {
 }
 </style>
 </head>
-<body onclick="startSound()">
+<body>
 
 <!-- Background sound -->
 <audio id="backgroundSound" src="https://files.catbox.moe/522394.mp3" loop></audio>
@@ -215,10 +250,7 @@ body {
   <!-- KCNX Button (changed text) -->
   <button id="kcnxButton" onclick="goFullScreen()">[⌕]𓆉</button>
 
-  <!-- Main screen window button replaced with SVG (removed) -->
-  <!-- Removed the SVG icon from here -->
-
-  <!-- Window menu for icon -->
+  <!-- Window icon -->
   <div id="windowIcon" style="position: absolute; top: 10px; right: 10px; cursor:pointer; width:24px; height:24px;" onclick="toggleWindowMenu()">
     <!-- SVG icon for window -->
     <svg width="24" height="24" viewBox="0 0 122.46 122.88" xmlns="http://www.w3.org/2000/svg" style="fill:#0078D6;">
@@ -233,28 +265,40 @@ body {
     <div onclick="restart()">Restart</div>
   </div>
 
-  <div id="blurLayer" onclick="closeBlur()">
-    <div onclick="event.stopPropagation()">
-      <img src="https://i.ibb.co/4pDNDk1/avatar.png" class="profile-img" />
-      <div class="login-box">
+  <!-- Login overlay -->
+  <div id="blurLayer" onclick="closeBlur()" style="display:none; align-items:center; justify-content:center;">
+    <div onclick="event.stopPropagation()" style="display:flex; flex-direction:column; align-items:center;">
+      <!-- Admin Photo -->
+      <img src="https://cdn-icons-png.flaticon.com/512/1077/1077114.png" alt="Admin" class="profile-img" style="width:100px; height:100px; margin-bottom:10px; border-radius:50%;" />
+
+      <!-- Admin text -->
+      <div style="font-size:24px; font-weight:bold; margin-bottom:10px;">admin</div>
+
+      <!-- Password input with eye toggle -->
+      <div id="pass-container" style="position:relative;">
         <input
           type="password"
           id="pass"
           placeholder="Enter password"
-          onkeydown="if(event.key==='Enter'){login();}"
         />
-        <button class="arrow-btn" onclick="login()">→</button>
+        <!-- Eye icon for toggle -->
+        <svg id="toggleEye" onclick="togglePassword()" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="fill:#fff;">
+          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.48 0-4.5-2.02-4.5-4.5S9.52 8.5 12 8.5 16.5 10.52 16.5 13 14.48 17.5 12 17.5zm0-7c-1.93 0-3.5 1.57-3.5 3.5S10.07 13.5 12 13.5 15.5 11.93 15.5 10 13.93 10 12 10z"/>
+        </svg>
       </div>
+
+      <!-- Arrow button -->
+      <button class="arrow-btn" onclick="login()">→</button>
     </div>
   </div>
 </div>
 
-<!-- DESKTOP -->
-<div id="desktop" onclick="closeStart()">
-  <!-- ICONS -->
+<!-- DESKTOP (display after login) -->
+<div id="desktop">
+  <!-- ICON GRID -->
   <div id="desktopIcons">
     <!-- Existing icons -->
-    <div class="icon" onclick="openApp('https://www.microsoft.com/en-in/edge')">
+    <div class="icon" onclick="openApp('https://www.bing.com')">
       <img src="https://cdn-icons-png.flaticon.com/512/732/732221.png" />
       <span>Microsoft Edge</span>
     </div>
@@ -270,8 +314,7 @@ body {
       <img src="https://i.ibb.co/vxzNSDjR/recycling-bin-trash-rubbish-bins-waste-paper-baskets-computer-icons-window-thumbnail.jpg" />
       <span>Recycle Bin</span>
     </div>
-
-    <!-- New apps: PC, Settings, YouTube, Netflix -->
+    <!-- Additional apps -->
     <div class="icon" onclick="openApp('https://example.com')">
       <a href="#"><img src="https://cdn-icons-png.flaticon.com/512/337/337946.png" alt="PC" /></a>
       <span>PC</span>
@@ -292,8 +335,7 @@ body {
       </a>
       <span>Netflix</span>
     </div>
-
-    <!-- Google icon replacing G icon -->
+    <!-- Google icon -->
     <div class="icon" onclick="openApp('https://www.google.com')">
       <a href="https://www.google.com" target="_blank">
         <img src="https://upload.wikimedia.org/wikipedia/commons/2/2f/Google_2015_logo.svg" alt="Google" />
@@ -310,7 +352,6 @@ body {
 
   <!-- TASKBAR -->
   <div id="taskbar">
-    <!-- The window icon is now the SVG in the taskbar -->
     <div id="taskbarWindowIcon" style="cursor:pointer; margin-right:10px;" onclick="toggleWindowMenu()">
       <!-- SVG icon for window -->
       <svg width="24" height="24" viewBox="0 0 122.46 122.88" xmlns="http://www.w3.org/2000/svg" style="fill:#0078D6;">
@@ -349,6 +390,26 @@ setInterval(()=>{
 // LOGIN
 function showLogin(e){e.stopPropagation();document.getElementById('blurLayer').style.display="flex";}
 function closeBlur(){document.getElementById('blurLayer').style.display="none";}
+function login(){
+  const pw = document.getElementById('pass').value;
+  if(pw==="12345"){
+    document.getElementById('main').style.display="none";
+    document.getElementById('desktop').style.display="block";
+  }
+}
+// Toggle password visibility
+function togglePassword() {
+  const passInput = document.getElementById('pass');
+  const icon = document.getElementById('toggleEye');
+  if (passInput.type === "password") {
+    passInput.type = "text";
+    icon.innerHTML = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.48 0-4.5-2.02-4.5-4.5S9.52 8.5 12 8.5 16.5 10.52 16.5 13 14.48 17.5 12 17.5zm0-7c-1.93 0-3.5 1.57-3.5 3.5S10.07 13.5 12 13.5 15.5 11.93 15.5 10 13.93 10 12 10z"/>`;
+  } else {
+    passInput.type = "password";
+    icon.innerHTML = `<path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 13c-2.48 0-4.5-2.02-4.5-4.5S9.52 8.5 12 8.5 16.5 10.52 16.5 13 14.48 17.5 12 17.5zm0-7c-1.93 0-3.5 1.57-3.5 3.5S10.07 13.5 12 13.5 15.5 11.93 15.5 10 13.93 10 12 10z"/>`;
+  }
+}
+// Start login
 function login(){
   const pw = document.getElementById('pass').value;
   if(pw==="12345"){
@@ -402,10 +463,6 @@ function sleep() {
 function restart() {
   alert('Restart (simulate)');
 }
-function startSound() {
-  // optional: play a sound on any click
-}
-// Effects for icon clicks
 </script>
 </body>
-                    </html>
+</html>
